@@ -14,24 +14,22 @@ export default function LoginForm() {
   const handleLogin = async (e) => {
     e.preventDefault();
     dispatch(login({email,password}))
-    setTimeout(()=>{
-      dispatch(fetchUser());
-
-    },0)
-    // router.push('products')
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+    .then((response)=>{
+      dispatch(fetchUser())
+      .then((response) => {
+        console.log(response)
+        if (response) {
+          router.push("products");
+        }
+        // console.log('User fetched successfully:', response);
+      })
+      .catch((error) => {
+        console.error('Error fetching user:', error);
+      });
+    }).catch((error) => {
+      console.error('Error fetching user:', error);
     });
-    const data = await res.json();
-    if (res.ok) {
-      router.push("products");
-    } else {
-      alert(data.message);
-    }
+    console.log( localStorage.getItem('token'))
   };
 
   return (
