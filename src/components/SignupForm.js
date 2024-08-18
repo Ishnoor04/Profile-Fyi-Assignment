@@ -15,7 +15,9 @@ export default function SignupForm() {
     e.preventDefault();
     dispatch(signup({ email, password,name }));
     console.log( localStorage.getItem('token'))
-    dispatch(fetchUser());
+    setTimeout(()=>{
+      dispatch(fetchUser());
+    },0)
     if (user) {
       router.push("products");
     } else {

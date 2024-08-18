@@ -309,12 +309,23 @@ const CartItem = () => {
                 </dl>
               </div>
 
-              <a
-                href="#"
-                class="flex w-full items-center justify-center rounded-lg bg-slate-200 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+              <div
+                onClick={()=>{
+                  toast.success("Order Placed", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                }}
+                class="flex w-full cursor-pointer items-center justify-center rounded-lg bg-slate-200 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
               >
                 Proceed to Checkout
-              </a>
+              </div>
 
               <div class="flex items-center justify-center gap-2">
                 <span class="text-sm font-normal text-gray-500"> or </span>

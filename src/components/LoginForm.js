@@ -14,7 +14,10 @@ export default function LoginForm() {
   const handleLogin = async (e) => {
     e.preventDefault();
     dispatch(login({email,password}))
-    dispatch(fetchUser());
+    setTimeout(()=>{
+      dispatch(fetchUser());
+
+    },0)
     // router.push('products')
     const res = await fetch("/api/auth/login", {
       method: "POST",
