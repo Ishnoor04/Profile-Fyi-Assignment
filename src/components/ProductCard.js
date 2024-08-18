@@ -9,6 +9,7 @@ import { handleCurrency } from "@/utils/HandleCurrency";
 import { fetchUser } from "@/features/authSlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import styles from "@/styles/styles";
 
 const ProductCard = ({ res }) => {
   const { items, cart } = useSelector((state) => state.allCart);
@@ -94,12 +95,12 @@ const ProductCard = ({ res }) => {
     <>
       <ToastContainer />
       <div className="pt-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 ss:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {items &&
             items.map((product, index) => (
               <div
                 key={product.id}
-                className="max-w-[400px] mx-auto border p-4"
+                className="lg:max-w-[400px] md:max-w-[340px] ss:max-w-[290] max-w-[300px] mx-auto border p-4"
                 ref={(el) => (cardRefs.current[index] = el)}
               >
                 <div className="w-full max-w-md aspect-square">
@@ -111,7 +112,7 @@ const ProductCard = ({ res }) => {
                 </div>
                 <div className="mt-5 flex items-center justify-between">
                   <div>
-                    <h6 className="font-medium text-xl leading-8 text-black mb-2">
+                    <h6 className={`${styles.heading2}`}>
                       {product.title}
                     </h6>
                     <h6 className="font-semibold text-xl leading-8 text-indigo-600">

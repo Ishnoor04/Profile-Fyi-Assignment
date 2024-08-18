@@ -39,6 +39,9 @@ const CartItem = () => {
       setWrong(false);
     }
     else {
+      dispatch(calculateSavings(2));
+      dispatch(getCartTotal());
+
       setWrong(true);
       setRight(false);
     }
@@ -344,9 +347,9 @@ const CartItem = () => {
                   >
                     <path
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M19 12H5m14 0-4 4m4-4-4-4"
                     />
                   </svg>
@@ -372,7 +375,7 @@ const CartItem = () => {
                       setCoupon(e.target.value);
                     }}
                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500"
-                    placeholder=""
+                    placeholder="Try ISHNOORPER10 or ISHNOOR10"
                     required
                     value={coupon}
                   />
