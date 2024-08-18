@@ -13,16 +13,34 @@ export default function SignupForm() {
   const { user } = useSelector((state) => state.auth);
   const handleSignup = async (e) => {
     e.preventDefault();
-    dispatch(signup({ email, password,name }));
+    // const res = await fetch("/api/auth/signup", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ email, password, name }),
+    // });
+    dispatch(signup({email,password,name}))
+    .then((response)=>{
+      dispatch(fetchUser())
+      .then((response) => {
+        console.log(response)
+        if (response) {
+          router.push("products");
+        } else {
+          router.push("login");
+        }
+        // console.log('User fetched successfully:', response);
+      })
+      .catch((error) => {
+        console.error('Error fetching user:', error);
+      });
+    }).catch((error) => {
+      console.error('Error fetching user:', error);
+    });
     console.log( localStorage.getItem('token'))
-    setTimeout(()=>{
-      dispatch(fetchUser());
-    },0)
-    if (user) {
-      router.push("products");
-    } else {
-      router.push("login");
-    }
+   
+    
   };
 
   return (
