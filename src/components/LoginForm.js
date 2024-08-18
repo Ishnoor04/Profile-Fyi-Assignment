@@ -25,8 +25,8 @@ export default function LoginForm() {
 
     const data = await res.json();
     if (res.ok) {
-      dispatch(fetchUser());
       dispatch(login({email,password}))
+      dispatch(fetchUser());
       router.push("products");
     } else {
       alert(data.message);
@@ -35,7 +35,7 @@ export default function LoginForm() {
 
   return (
     <div>
-      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="flex min-h-full flex-col justify-center px-6 py-24 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Log in to your account
@@ -59,7 +59,7 @@ export default function LoginForm() {
                   onChange={(e) => setEmail(e.target.value)}
                   autocomplete="email"
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -82,7 +82,7 @@ export default function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   autocomplete="current-password"
                   required
-                  className="block mr-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>

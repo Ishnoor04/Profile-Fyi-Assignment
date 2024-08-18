@@ -12,16 +12,17 @@ import { useRouter } from "next/router";
 const App = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { user } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(fetchUser());
-    router.push("signup");
   }, []);
-  
+  const { user } = useSelector((state) => state.auth);
+  if (user) {
+    router.push("products");
+  }
   return (
     <div>
       <Navbar />
-      
+      <SignupForm />
     </div>
   );
 };

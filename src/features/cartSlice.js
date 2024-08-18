@@ -14,7 +14,6 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
   });
 
   const data = await response.json();
-  console.log('data',data)
   if (response.ok) {
     return data;
   } else {
@@ -23,7 +22,6 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
 });
 
 export const updateCart = createAsyncThunk('updateCart', async({item, remove})=>{
-  console.log("$$$$$$$$$$$$", item,remove)
   const token = localStorage.getItem('token');
   const response = await fetch('/api/cart', {
     method: 'POST',
@@ -51,7 +49,6 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      console.log('here')
       let find = state.cart.findIndex((item) => item.id === action.payload.id);
       if (find >= 0 && state.cart[find].quantity < state.cart[find].inStock) {
         state.cart[find].quantity += 1;
@@ -107,7 +104,15 @@ export const cartSlice = createSlice({
       });
     },
     calculateSavings: (state, action) => {
-      state.savings = (state.totalPrice / 10).toFixed(2);
+      if(action.payload === 0) {
+        state.savings = (state.totalPrice / 10).toFixed(2);
+      }else if(action.payload === 1) {
+        state.savings = 10
+      }
+      else if(action.payload === 2) {
+        state.savings = 0
+      }
+
     },
     clearSavings: (state, action) => {
       state.savings = 0;
@@ -116,7 +121,6 @@ export const cartSlice = createSlice({
   extraReducers:(builder)=>{
     builder
       .addCase(fetchData.fulfilled, (state, action) => {
-        console.log(action.payload)
           state.cart = action.payload;
         
       })

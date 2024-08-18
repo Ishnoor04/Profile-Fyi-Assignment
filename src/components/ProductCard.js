@@ -5,73 +5,80 @@ import { addToCart, updateCart } from "@/features/cartSlice";
 import Ratings from "@/utils/Ratings";
 import { products } from "@/products";
 import { store } from "@/app/store";
+import { handleCurrency } from "@/utils/HandleCurrency";
+import { fetchUser } from "@/features/authSlice";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductCard = ({ res }) => {
   const { items, cart } = useSelector((state) => state.allCart);
-  const {user} = useSelector((state)=>state.auth)
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(fetchUser())
+  },[])
   const cardRefs = useRef([]);
   const handleAddToCart = (product, index) => {
-
     if (product.quantity >= product.inStock) {
       alert("Maximum limit reached");
       return;
+    } else {
+      const cartIcon = document.querySelector(".cart-icon");
+      const image = cardRefs.current[index]?.querySelector("img");
+
+      // Get the position of the product image
+      const {
+        x: imageX,
+        y: imageY,
+        width,
+        height,
+      } = image.getBoundingClientRect();
+
+      // Create a clone of the image
+      const clone = image.cloneNode(true);
+      document.body.appendChild(clone);
+
+      // Set the position of the clone to be the same as the original image
+      gsap.set(clone, {
+        position: "fixed",
+        top: imageY,
+        left: imageX,
+        width: "100px",
+        height: "100px",
+        zIndex: 1000,
+      });
+
+      // Calculate the final position for the animation to the cart icon
+      const { top: cartTop, left: cartLeft } = cartIcon.getBoundingClientRect();
+
+      gsap.to(clone, {
+        duration: 0.7,
+        top: cartTop,
+        left: cartLeft - 20,
+        scale: 0.1,
+        opacity: 0.5,
+        ease: "power2.out",
+        onComplete: () => {
+          // Remove the clone after the animation completes
+          clone.remove();
+        },
+      });
+
+      // Add product to cart
+
+      dispatch(addToCart(product));
+
+      setTimeout(() => {
+        const updatedCart = store.getState().allCart.cart; // Get updated state
+        let updatedItem = updatedCart.find((item) => item.id === product.id);
+        dispatch(updateCart({ item: updatedItem, remove: false }));
+      }, 0);
     }
-    const cartIcon = document.querySelector(".cart-icon");
-    const image = cardRefs.current[index]?.querySelector("img");
-
-    // Get the position of the product image
-    const {
-      x: imageX,
-      y: imageY,
-      width,
-      height,
-    } = image.getBoundingClientRect();
-
-    // Create a clone of the image
-    const clone = image.cloneNode(true);
-    document.body.appendChild(clone);
-
-    // Set the position of the clone to be the same as the original image
-    gsap.set(clone, {
-      position: "fixed",
-      top: imageY,
-      left: imageX,
-      width: "100px",
-      height: "100px",
-      zIndex: 1000,
-    });
-
-    // Calculate the final position for the animation to the cart icon
-    const { top: cartTop, left: cartLeft } = cartIcon.getBoundingClientRect();
-
-    gsap.to(clone, {
-      duration: 0.7,
-      top: cartTop,
-      left: cartLeft - 20,
-      scale: 0.1,
-      opacity: 0.5,
-      ease: "power2.out",
-      onComplete: () => {
-        // Remove the clone after the animation completes
-        clone.remove();
-      },
-    });
-
-    // Add product to cart
-    console.log(product)
-    dispatch(addToCart(product));
-
-     setTimeout(() => {
-      const updatedCart = store.getState().allCart.cart; // Get updated state
-      let updatedItem = updatedCart.find((item) => item.id === product.id);
-      console.log(updatedItem); // Log the updated cart item
-      dispatch(updateCart({item:updatedItem, remove:false}));
-    }, 0);
-
   };
 
   return (
+    <>
+      <ToastContainer />
     <div className="pt-24">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {items &&
@@ -94,7 +101,7 @@ const ProductCard = ({ res }) => {
                     {product.title}
                   </h6>
                   <h6 className="font-semibold text-xl leading-8 text-indigo-600">
-                    ${product.price}
+                    {handleCurrency(product.price)}
                   </h6>
                   <div className="flex flex-row gap-2 items-center">
                     <Ratings rating={product.rating.rate} />
@@ -104,9 +111,21 @@ const ProductCard = ({ res }) => {
                 </div>
                 <button
                   onClick={() => {
-                   
+                    console.log(product.quantity, product.inStock);
+                    if (product.quantity >= product.inStock) {
+                      toast.error("Maximum quantity reached", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                      });
+                    } else {
                       handleAddToCart(product, index);
-                    
+                    }
                   }}
                   className="p-2 min-[400px]:p-4 rounded-full bg-white border border-gray-300 flex items-center justify-center group shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-200 hover:border-blue-400 hover:bg-blue-50"
                 >
@@ -131,6 +150,7 @@ const ProductCard = ({ res }) => {
           ))}
       </div>
     </div>
+    </>
   );
 };
 

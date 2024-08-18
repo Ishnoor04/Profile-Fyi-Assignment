@@ -1,5 +1,7 @@
 import { store } from "@/app/store";
 import { fetchUser } from "@/features/authSlice";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   addToCart,
   calculateSavings,
@@ -11,6 +13,7 @@ import {
   removeItem,
   updateCart,
 } from "@/features/cartSlice";
+import { handleCurrency } from "@/utils/HandleCurrency";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,16 +26,28 @@ const CartItem = () => {
   const [right, setRight] = useState(false);
   const [wrong, setWrong] = useState(false);
   const handleCoupon = () => {
-    if (coupon === "ISHNOOR10") {
-      dispatch(calculateSavings());
+    if (coupon === "ISHNOORPER10") {
+      dispatch(calculateSavings(0));
       dispatch(getCartTotal());
       setRight(true);
       setWrong(false);
-    } else {
+    } 
+    else if(coupon === "ISHNOOR10") {
+      dispatch(calculateSavings(1));
+      dispatch(getCartTotal());
+      setRight(true);
+      setWrong(false);
+    }
+    else {
       setWrong(true);
       setRight(false);
     }
   };
+  const removeCoupon = ()=>{
+    dispatch(calculateSavings(2));
+      dispatch(getCartTotal());
+
+  }
   const dispatch = useDispatch();
   useEffect(() => {
     setWrong(false);
@@ -40,10 +55,12 @@ const CartItem = () => {
     dispatch(clearSavings());
   }, [cart]);
   useEffect(() => {
-    dispatch(fetchUser());
     dispatch(fetchData());
+    dispatch(fetchUser());
   }, []);
 
+
+  
   const handleIncrement = (cartItemId) => {
     dispatch(increaseItemQuantity(cartItemId));
 
@@ -51,7 +68,6 @@ const CartItem = () => {
     setTimeout(() => {
       const updatedCart = store.getState().allCart.cart; // Get updated state
       let updatedItem = updatedCart.find((item) => item.id === cartItemId);
-      console.log(updatedItem); // Log the updated cart item
       dispatch(updateCart({item:updatedItem,remove:false}));
 
     }, 0);
@@ -63,12 +79,13 @@ const CartItem = () => {
     setTimeout(() => {
       const updatedCart = store.getState().allCart.cart; // Get updated state
       let updatedItem = updatedCart.find((item) => item.id === cartItemId);
-      console.log(updatedItem); // Log the updated cart item
       dispatch(updateCart({item:updatedItem,remove:false}));
     }, 0);
   };
 
   return (
+    <>
+      <ToastContainer />
     <section class="bg-white py-8 antialiased  md:py-16">
       <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <h2 class="text-xl font-semibold text-gray-900 e sm:text-2xl">
@@ -162,10 +179,19 @@ const CartItem = () => {
                             id="increment-button"
                             onClick={() => {
                               if (cartItem.quantity >= cartItem.inStock) {
-                                alert("Maximum quanity reached");
+                                // alert("Maximum quanity reached");
+                                toast.error("Maximum quantity reached", {
+                                  position: "top-right",
+                                  autoClose: 3000,
+                                  hideProgressBar: false,
+                                  closeOnClick: true,
+                                  pauseOnHover: true,
+                                  draggable: true,
+                                  progress: undefined,
+                                  theme: "colored",
+                                });
                               } else {
                                 // dispatch(increaseItemQuantity(cartItem.id));
-                                console.log(cartItem.id);
                                 handleIncrement(cartItem.id);
 
                                 // dispatch(updateCart(cartItem, user.user._id));
@@ -263,14 +289,14 @@ const CartItem = () => {
                       Original price
                     </dt>
                     <dd class="text-base font-medium text-gray-900 ">
-                      {totalPrice}
+                      {handleCurrency(totalPrice)}
                     </dd>
                   </dl>
 
                   <dl class="flex items-center justify-between gap-4">
                     <dt class="text-base font-normal text-gray-500">Savings</dt>
                     <dd class="text-base font-medium text-green-600">
-                      {savings}
+                      {handleCurrency(savings)}
                     </dd>
                   </dl>
                 </div>
@@ -278,22 +304,22 @@ const CartItem = () => {
                 <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2">
                   <dt class="text-base font-bold text-gray-900 ">Total</dt>
                   <dd class="text-base font-bold text-gray-900 ">
-                    {discountedPrice}
+                  {handleCurrency(discountedPrice)}
                   </dd>
                 </dl>
               </div>
 
               <a
                 href="#"
-                class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                class="flex w-full items-center justify-center rounded-lg bg-slate-200 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
               >
                 Proceed to Checkout
               </a>
 
               <div class="flex items-center justify-center gap-2">
                 <span class="text-sm font-normal text-gray-500"> or </span>
-                <a
-                  href="#"
+                <Link 
+                  href="/products"
                   title=""
                   class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline "
                 >
@@ -313,7 +339,7 @@ const CartItem = () => {
                       d="M19 12H5m14 0-4 4m4-4-4-4"
                     />
                   </svg>
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -327,6 +353,7 @@ const CartItem = () => {
                     {" "}
                     Do you have a COUPON?{" "}
                   </label>
+                  <div className="flex flex-row items-center">
                   <input
                     type="text"
                     id="voucher"
@@ -336,17 +363,30 @@ const CartItem = () => {
                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500"
                     placeholder=""
                     required
+                    value={coupon}
                   />
+                  <div className="-ml-6 cursor-pointer" onClick={()=>{
+                    setCoupon("")
+                    setRight(false)
+                    setWrong(false)
+                    removeCoupon()
+                    }}>X</div>
+                  </div>
                   {right && (
-                    <p className="text-green-500">Correct coupon code</p>
+                    <p className="text-green-500">Valid coupon code</p>
                   )}
                   {wrong && (
-                    <p className="text-red-600">InCorrect coupon code</p>
+                    <p className="text-red-600">Invalid coupon code</p>
                   )}
                 </div>
                 <div
-                  onClick={handleCoupon}
-                  class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                  onClick={()=>{
+                    if(coupon) {
+
+                      handleCoupon()
+                    }
+                  }}
+                  class="flex cursor-pointer  w-full items-center justify-center rounded-lg bg-slate-200 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
                 >
                   Apply Code
                 </div>
@@ -356,6 +396,7 @@ const CartItem = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 

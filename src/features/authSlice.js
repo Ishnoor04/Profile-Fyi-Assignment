@@ -5,6 +5,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // Define async thunks for login, signup, and logout
 export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
   const token = localStorage.getItem('token');
+
   if (!token) throw new Error('No token found');
 
   const response = await fetch('/api/auth/me', {
@@ -26,6 +27,7 @@ export const signup = createAsyncThunk('auth/signup', async (userDetails) => {
   });
   const data = await response.json();
   if (response.ok) {
+    localStorage.setItem('token', data.token);
     return data; // Handle the signup response, including token and user data
   } else {
     throw new Error(data.message);
