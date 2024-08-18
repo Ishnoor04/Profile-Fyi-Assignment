@@ -14,6 +14,7 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
   });
 
   const data = await response.json();
+  console.log('data',data)
   if (response.ok) {
     return data;
   } else {
@@ -21,8 +22,8 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
   }
 });
 
-export const updateCart = createAsyncThunk('updateCart', async(item, remove)=>{
-  console.log("$$$$$$$$$$$$", item)
+export const updateCart = createAsyncThunk('updateCart', async({item, remove})=>{
+  console.log("$$$$$$$$$$$$", item,remove)
   const token = localStorage.getItem('token');
   const response = await fetch('/api/cart', {
     method: 'POST',
@@ -37,20 +38,6 @@ export const updateCart = createAsyncThunk('updateCart', async(item, remove)=>{
   }
 })
 
-export const removeItemFromCart = createAsyncThunk('removeItemFromCart', async(itemId)=>{
-  const token = localStorage.getItem('token');
-  const response = await fetch('/api/cartRemove', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}` },
-    body: JSON.stringify({item,userId}),
-  });
-  const data = await response.json();
-  if (response.ok) {
-    return data; // Handle the signup response, including token and user data
-  } else {
-    throw new Error(data.message);
-  }
-})
 const initialState = {
   cart: [],
   items: products,
@@ -64,6 +51,7 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
+      console.log('here')
       let find = state.cart.findIndex((item) => item.id === action.payload.id);
       if (find >= 0 && state.cart[find].quantity < state.cart[find].inStock) {
         state.cart[find].quantity += 1;
@@ -79,6 +67,7 @@ export const cartSlice = createSlice({
       if (Array.isArray(state.cart)) {
         let { totalQuantity, totalPrice } = state.cart.reduce(
           (cartTotal, cartItem) => {
+            
             const { price, quantity } = cartItem;
             const itemTotal = price * quantity;
             cartTotal.totalPrice += itemTotal;
@@ -102,7 +91,6 @@ export const cartSlice = createSlice({
       state.cart = state.cart.filter((item) => item.id !== action.payload);
     },
     increaseItemQuantity: (state, action) => {
-      let a = {}
       state.cart = state.cart.map((item) => {
         if (item.id === action.payload && item.quantity < item.inStock) {
           return { ...item, quantity: item.quantity + 1 };
@@ -128,7 +116,9 @@ export const cartSlice = createSlice({
   extraReducers:(builder)=>{
     builder
       .addCase(fetchData.fulfilled, (state, action) => {
-        state.cart = action.payload;
+        console.log(action.payload)
+          state.cart = action.payload;
+        
       })
   }
 });

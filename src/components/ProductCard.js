@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addToCart, updateCart } from "@/features/cartSlice";
 import Ratings from "@/utils/Ratings";
 import { products } from "@/products";
+import { store } from "@/app/store";
 
 const ProductCard = ({ res }) => {
   const { items, cart } = useSelector((state) => state.allCart);
@@ -58,8 +59,16 @@ const ProductCard = ({ res }) => {
     });
 
     // Add product to cart
+    console.log(product)
     dispatch(addToCart(product));
-    dispatch(updateCart(product, false))
+
+     setTimeout(() => {
+      const updatedCart = store.getState().allCart.cart; // Get updated state
+      let updatedItem = updatedCart.find((item) => item.id === product.id);
+      console.log(updatedItem); // Log the updated cart item
+      dispatch(updateCart({item:updatedItem, remove:false}));
+    }, 0);
+
   };
 
   return (
@@ -95,12 +104,9 @@ const ProductCard = ({ res }) => {
                 </div>
                 <button
                   onClick={() => {
-                    let find = cart.findIndex((item) => item.id === product.id);
-                    if (find >= 0 && cart[find].quantity >= product.inStock) {
-                      alert("Maximum limit reached");
-                    } else {
+                   
                       handleAddToCart(product, index);
-                    }
+                    
                   }}
                   className="p-2 min-[400px]:p-4 rounded-full bg-white border border-gray-300 flex items-center justify-center group shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-200 hover:border-blue-400 hover:bg-blue-50"
                 >

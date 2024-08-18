@@ -38,14 +38,13 @@ const CartItem = () => {
     setWrong(false);
     setRight(false);
     dispatch(clearSavings());
-    dispatch(getCartTotal());
   }, [cart]);
   useEffect(() => {
     dispatch(fetchUser());
-    dispatch(fetchData())
+    dispatch(fetchData());
   }, []);
 
-  const handleIncrement = (cartItemId)=>{
+  const handleIncrement = (cartItemId) => {
     dispatch(increaseItemQuantity(cartItemId));
 
     // Using a short delay to allow Redux state to update before logging the new value
@@ -53,10 +52,11 @@ const CartItem = () => {
       const updatedCart = store.getState().allCart.cart; // Get updated state
       let updatedItem = updatedCart.find((item) => item.id === cartItemId);
       console.log(updatedItem); // Log the updated cart item
-      dispatch(updateCart(updatedItem,false))
+      dispatch(updateCart({item:updatedItem,remove:false}));
+
     }, 0);
-  }
-  const handleDecrement = (cartItemId)=>{
+  };
+  const handleDecrement = (cartItemId) => {
     dispatch(decreaseItemQuantity(cartItemId));
 
     // Using a short delay to allow Redux state to update before logging the new value
@@ -64,10 +64,9 @@ const CartItem = () => {
       const updatedCart = store.getState().allCart.cart; // Get updated state
       let updatedItem = updatedCart.find((item) => item.id === cartItemId);
       console.log(updatedItem); // Log the updated cart item
-      dispatch(updateCart(updatedItem,false))
+      dispatch(updateCart({item:updatedItem,remove:false}));
     }, 0);
-  }
-
+  };
 
   return (
     <section class="bg-white py-8 antialiased  md:py-16">
@@ -129,7 +128,7 @@ const CartItem = () => {
                             id="decrement-button"
                             data-input-counter-decrement="counter-input"
                             onClick={() => {
-                              handleDecrement(cartItem.id)
+                              handleDecrement(cartItem.id);
                             }}
                             class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 "
                           >
@@ -164,12 +163,10 @@ const CartItem = () => {
                             onClick={() => {
                               if (cartItem.quantity >= cartItem.inStock) {
                                 alert("Maximum quanity reached");
-                              } 
-                              
-                              else {
+                              } else {
                                 // dispatch(increaseItemQuantity(cartItem.id));
-                                console.log(cartItem.id)
-                                handleIncrement(cartItem.id)
+                                console.log(cartItem.id);
+                                handleIncrement(cartItem.id);
 
                                 // dispatch(updateCart(cartItem, user.user._id));
                               }
@@ -213,8 +210,10 @@ const CartItem = () => {
                         <div class="flex items-center gap-4">
                           <button
                             type="button"
-                            onClick={() => {dispatch(removeItem(cartItem.id))
-                              dispatch(updateCart(cartItem,true))
+                            onClick={() => {
+                              dispatch(removeItem(cartItem.id));
+                              dispatch(updateCart({item:cartItem,remove:true}));
+
                             }}
                             class="inline-flex items-center text-sm font-medium text-red-600 hover:underline "
                           >

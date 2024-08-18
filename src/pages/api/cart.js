@@ -13,9 +13,10 @@ export default async function handler(req, res) {
 
     if (req.method === "POST") {
       const { item, remove } = req.body;
+      console.log(remove);
       const cart = await db.collection("carts").findOne({ userId });
 
-      if (cart) {
+      if (cart && cart.items) {
         let itemArray = cart.items;
 
         if (remove) {

@@ -17,9 +17,9 @@ export function Navbar() {
     
   }, [cart]);
   useEffect(()=>{
-    dispatch(fetchData())
 
-    dispatch(getCartTotal());
+    dispatch(fetchData())
+    dispatch(getCartTotal())
   },[])
   return (
     <header
@@ -68,7 +68,6 @@ export function Navbar() {
         {user && (
           <button type="submit" onClick={()=>{
             dispatch(logout())
-            dispatch(fetchUser())
             router.reload()
           }}>Logout</button>
 
