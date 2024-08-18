@@ -1,13 +1,10 @@
 import React, { useEffect } from "react";
-import ProductCard from "@/components/ProductCard";
-import { store } from "../app/store";
-import { Provider, useDispatch, useSelector } from "react-redux";
 import { Navbar } from "@/components/Navbar";
+import ProductCard from "@/components/ProductCard";
 import LoginForm from "@/components/LoginForm";
-import SignupForm from "@/components/SignupForm";
-import { fetchUser, login } from "@/features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "@/features/authSlice";
 import Link from "next/link";
-
 
 const App = () => {
   const dispatch = useDispatch()
@@ -20,7 +17,7 @@ const App = () => {
   <div>
     <Navbar />
     {!user ? (
-      <SignupForm />
+      <LoginForm />
 
     ) : (
       <div className="text-black pt-32">
@@ -32,6 +29,5 @@ const App = () => {
   )
 }
   
-
 
 export default App;
