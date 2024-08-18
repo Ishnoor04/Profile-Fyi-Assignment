@@ -20,8 +20,19 @@ const ProductCard = ({ res }) => {
   }, []);
   const cardRefs = useRef([]);
   const handleAddToCart = async (product, index) => {
-    if (product.quantity >= product.inStock) {
-      alert("Maximum limit reached");
+    const updatedCart = store.getState().allCart.cart; // Get updated state
+        let updatedItem = updatedCart.find((item) => item.id === product.id);
+    if (updatedItem && updatedItem.quantity >= product.inStock) {
+      toast.error("Maximum quantity reached", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
       return;
     } else {
       const cartIcon = document.querySelector(".cart-icon");
@@ -117,9 +128,8 @@ const ProductCard = ({ res }) => {
                   <button
                     onClick={() => {
                       console.log(product.quantity, product.inStock);
-                      const updatedCart = store.getState().allCart.cart; // Get updated state
-                      let updatedItem = updatedCart.find((item) => item.id === product.id);
-                      if (updatedItem.quantity >= product.inStock) {
+                      
+                      if (product.quantity >= product.inStock) {
                         toast.error("Maximum quantity reached", {
                           position: "top-right",
                           autoClose: 3000,
