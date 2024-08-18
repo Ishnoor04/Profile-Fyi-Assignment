@@ -78,9 +78,7 @@ const ProductCard = ({ res }) => {
       });
 
       // Add product to cart
-
       dispatch(addToCart(product));
-
       setTimeout(() => {
         const updatedCart = store.getState().allCart.cart; // Get updated state
         let updatedItem = updatedCart.find((item) => item.id === product.id);
@@ -124,7 +122,6 @@ const ProductCard = ({ res }) => {
                   </div>
                   <button
                     onClick={() => {
-                      console.log(product.quantity, product.inStock);
 
                       if (product.quantity >= product.inStock) {
                         toast.error("Maximum quantity reached", {

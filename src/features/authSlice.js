@@ -1,11 +1,9 @@
-// features/authSlice.js
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Define async thunks for login, signup, and logout
+// Fetch user data from API(/api/auth/me) using token stored in local storage
 export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
   const token = localStorage.getItem('token');
-  console.log('hi from fetch',token)
   if (!token) throw new Error('No token found');
 
   const response = await fetch('/api/auth/me', {
@@ -14,11 +12,13 @@ export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
 
   const data = await response.json();
   if (response.ok) {
-    return data;
+    return data; // Return user data if successful
   } else {
-    throw new Error(data.message);
+    throw new Error(data.message); // Throw error if response is not OK
   }
 });
+
+// Handle user signup by sending user details to the API
 export const signup = createAsyncThunk('auth/signup', async (userDetails) => {
   const response = await fetch('/api/auth/signup', {
     method: 'POST',
@@ -28,12 +28,13 @@ export const signup = createAsyncThunk('auth/signup', async (userDetails) => {
   const data = await response.json();
   if (response.ok) {
     localStorage.setItem('token', data.token);
-    return data; // Handle the signup response, including token and user data
+    return data; // Return the signup response, including token and user data
   } else {
     throw new Error(data.message);
   }
 });
 
+// Handle user login by sending credentials to the API
 export const login = createAsyncThunk('auth/login', async (credentials) => {
   const response = await fetch('/api/auth/login', {
     method: 'POST',
@@ -49,11 +50,13 @@ export const login = createAsyncThunk('auth/login', async (credentials) => {
   }
 });
 
+// Handle user logout by removing token from local storage
 export const logout = createAsyncThunk('auth/logout', async () => {
   localStorage.removeItem('token'); // Remove token from local storage
   return;
 });
 
+// Create the auth slice with initial state and reducers
 const authSlice = createSlice({
   name: 'auth',
   initialState: {

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import CartItem from "@/components/CartItem";
-
 import { Provider, useDispatch } from "react-redux";
 import { store } from "@/app/store";
 import { Navbar } from "@/components/Navbar";

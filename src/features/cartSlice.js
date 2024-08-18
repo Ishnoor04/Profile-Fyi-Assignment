@@ -3,7 +3,7 @@ import { products } from "@/products";
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 
-
+// Async thunk to fetch cart data from the server
 export const fetchData = createAsyncThunk('data/fetchData', async () => {
   const token = localStorage.getItem('token')
   if (!token) throw new Error('No token found');
@@ -21,6 +21,7 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
   }
 });
 
+// Async thunk to update cart data on the server
 export const updateCart = createAsyncThunk('updateCart', async({item, remove})=>{
   const token = localStorage.getItem('token');
   const response = await fetch('/api/cart', {
@@ -36,6 +37,7 @@ export const updateCart = createAsyncThunk('updateCart', async({item, remove})=>
   }
 })
 
+// Initial state for the cart slice
 const initialState = {
   cart: [],
   items: products,

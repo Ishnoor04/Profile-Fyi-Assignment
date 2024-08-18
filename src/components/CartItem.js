@@ -19,12 +19,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const CartItem = () => {
+    // Select necessary state from the Redux store
   const { cart, totalQuantity, totalPrice, savings, discountedPrice } =
     useSelector((state) => state.allCart);
   const { user } = useSelector((state) => state.auth);
+  // State for managing coupon input and validation messages
   const [coupon, setCoupon] = useState("");
   const [right, setRight] = useState(false);
   const [wrong, setWrong] = useState(false);
+  
+  // Function to handle coupon application
   const handleCoupon = () => {
     if (coupon === "ISHNOORPER10") {
       dispatch(calculateSavings(0));
@@ -44,6 +48,8 @@ const CartItem = () => {
       setRight(false);
     }
   };
+
+  // Function to remove the coupon and reset savings
   const removeCoupon = () => {
     dispatch(calculateSavings(2));
     dispatch(getCartTotal());
@@ -62,7 +68,7 @@ const CartItem = () => {
   const handleIncrement = (cartItemId) => {
     dispatch(increaseItemQuantity(cartItemId));
 
-    // Using a short delay to allow Redux state to update before logging the new value
+    // Delay to allow Redux state to update before getting the updated cart
     setTimeout(() => {
       const updatedCart = store.getState().allCart.cart; // Get updated state
       let updatedItem = updatedCart.find((item) => item.id === cartItemId);
@@ -72,7 +78,7 @@ const CartItem = () => {
   const handleDecrement = (cartItemId) => {
     dispatch(decreaseItemQuantity(cartItemId));
 
-    // Using a short delay to allow Redux state to update before logging the new value
+    // Delay to allow Redux state to update before getting the updated cart
     setTimeout(() => {
       const updatedCart = store.getState().allCart.cart; // Get updated state
       let updatedItem = updatedCart.find((item) => item.id === cartItemId);
@@ -144,6 +150,7 @@ const CartItem = () => {
                               onClick={() => {
                                 handleDecrement(cartItem.id);
                               }}
+                              // Disable button when quantity is equal to 1
                               class={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 ${cartItem.quantity === 1 ? "cursor-not-allowed opacity-50": "cursor-pointer"}`}
                             >
                               <svg
@@ -176,7 +183,6 @@ const CartItem = () => {
                               id="increment-button"
                               onClick={() => {
                                 if (cartItem.quantity >= cartItem.inStock) {
-                                  // alert("Maximum quanity reached");
                                   toast.error("Maximum quantity reached", {
                                     position: "top-right",
                                     autoClose: 3000,
@@ -188,10 +194,7 @@ const CartItem = () => {
                                     theme: "colored",
                                   });
                                 } else {
-                                  // dispatch(increaseItemQuantity(cartItem.id));
                                   handleIncrement(cartItem.id);
-
-                                  // dispatch(updateCart(cartItem, user.user._id));
                                 }
                               }}
                               data-input-counter-increment="counter-input"
@@ -337,6 +340,7 @@ const CartItem = () => {
                       });
                     }
                   }}
+                  // Disabled when user is not present or cart is empty
                   class={`flex w-full items-center justify-center rounded-lg bg-slate-200 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 }`}
                 >
                   Proceed to Checkout
@@ -416,6 +420,7 @@ const CartItem = () => {
                         handleCoupon();
                       }
                     }}
+                    // Disabled when coupon variable is empty
                     class={`flex cursor-pointer  w-full items-center justify-center rounded-lg bg-slate-200 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 ${coupon ? "cursor-pointer":"cursor-not-allowed opacity-50"}`}
                   >
                     Apply Code

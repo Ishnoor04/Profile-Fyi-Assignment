@@ -8,9 +8,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(fetchUser());
-  // }, []);
+  // Function to handle form submission
   const handleLogin = async (e) => {
     e.preventDefault();
     dispatch(login({email,password}))
@@ -21,7 +19,6 @@ export default function LoginForm() {
         if (response) {
           router.push("products");
         }
-        // console.log('User fetched successfully:', response);
       })
       .catch((error) => {
         console.error('Error fetching user:', error);
@@ -100,21 +97,3 @@ export default function LoginForm() {
     </div>
   );
 }
-
-// <form onSubmit={handleLogin}>
-//   <input
-//     type="email"
-//     value={email}
-//     onChange={(e) => setEmail(e.target.value)}
-//     placeholder="Email"
-//     required
-//   />
-//   <input
-//     type="password"
-//     value={password}
-//     onChange={(e) => setPassword(e.target.value)}
-//     placeholder="Password"
-//     required
-//   />
-//   <button type="submit">Log In</button>
-// </form>

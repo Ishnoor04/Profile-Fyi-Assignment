@@ -13,24 +13,18 @@ export default function SignupForm() {
   const { user } = useSelector((state) => state.auth);
   const handleSignup = async (e) => {
     e.preventDefault();
-    // const res = await fetch("/api/auth/signup", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ email, password, name }),
-    // });
+   
     dispatch(signup({email,password,name}))
     .then((response)=>{
       dispatch(fetchUser())
       .then((response) => {
         console.log(response)
+        // If the user is logged in, redirect them to /products; otherwise, redirect to /login.
         if (response) {
           router.push("products");
         } else {
           router.push("login");
         }
-        // console.log('User fetched successfully:', response);
       })
       .catch((error) => {
         console.error('Error fetching user:', error);
@@ -38,7 +32,6 @@ export default function SignupForm() {
     }).catch((error) => {
       console.error('Error fetching user:', error);
     });
-    console.log( localStorage.getItem('token'))
    
     
   };
@@ -138,22 +131,4 @@ export default function SignupForm() {
   );
 }
 
-{
-  /* <form classNameName='mt-32' onSubmit={handleSignup}>
-  <input
-    type="email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    placeholder="Email"
-    required
-  />
-  <input
-    type="password"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    placeholder="Password"
-    required
-  />
-  <button type="submit">Sign Up</button>
-</form> */
-}
+
