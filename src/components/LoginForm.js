@@ -8,12 +8,13 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchUser());
+  // }, []);
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    dispatch(login({email,password}))
+    dispatch(fetchUser());
     // router.push('products')
     const res = await fetch("/api/auth/login", {
       method: "POST",
@@ -22,11 +23,8 @@ export default function LoginForm() {
       },
       body: JSON.stringify({ email, password }),
     });
-
     const data = await res.json();
     if (res.ok) {
-      dispatch(login({email,password}))
-      dispatch(fetchUser());
       router.push("products");
     } else {
       alert(data.message);
