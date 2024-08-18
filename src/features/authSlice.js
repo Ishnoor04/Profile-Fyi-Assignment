@@ -5,7 +5,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // Define async thunks for login, signup, and logout
 export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
   const token = localStorage.getItem('token');
-
+  console.log('hi from fetch',token)
   if (!token) throw new Error('No token found');
 
   const response = await fetch('/api/auth/me', {

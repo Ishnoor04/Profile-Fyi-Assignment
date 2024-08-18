@@ -14,6 +14,7 @@ export default function SignupForm() {
   const handleSignup = async (e) => {
     e.preventDefault();
     dispatch(signup({ email, password,name }));
+    console.log( localStorage.getItem('token'))
     dispatch(fetchUser());
     if (user) {
       router.push("products");

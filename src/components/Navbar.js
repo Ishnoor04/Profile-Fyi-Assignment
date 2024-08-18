@@ -11,7 +11,7 @@ export function Navbar() {
     (state) => state.allCart
   );
   const { user } = useSelector((state) => state.auth);
-
+  
   const dispatch = useDispatch();
   const router = useRouter();
   useEffect(() => {
